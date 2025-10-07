@@ -13,7 +13,7 @@ A simple Discord bot using [Amethyst JS](https://npmjs.org/package/amethystjs) t
 
 1. Clone the repository ( `git clone https://github.com/Greensky-gs/calwatcher` )
 2. Install dependencies ( `yarn install` )
-3. Fill the `.env` file link in [`./env.example`](./env.example)
+3. Fill the `.env` file link in [`./env.example`](./.env.example)
 4. Build the bot ( `yarn build` )
 5. Run the bot ( `yarn start` )
 
