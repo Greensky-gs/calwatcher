@@ -1,6 +1,6 @@
 import { AmethystCommand, log4js, preconditions } from "amethystjs";
 import unregistered from "../../preconditions/unregistered";
-import { ApplicationCommandOptionType } from "discord.js";
+import { ActionRowBuilder, ApplicationCommandOptionType, ButtonBuilder, ButtonStyle } from "discord.js";
 import { exampleCalendar, validCalendarURL } from "../../utils/toolbox";
 import { manager } from "../../cache/managers";
 
@@ -19,7 +19,19 @@ export default new AmethystCommand({
     aliases: ['register', 'signup', 'inscrire']
 }).setMessageRun(async({ message, client, options }) => {
     const url = options.first;
-    if (!url) return message.reply(`❌ | Vous devez spécifier une URL.\nExemple : \`${client.configs.prefix}enregistrer ${exampleCalendar()}\``).catch(log4js.trace);
+    if (!url) {
+        const button = new ButtonBuilder()
+            .setLabel('Trouver mon URL CELCAT')
+            .setStyle(ButtonStyle.Link)
+            .setURL('https://edt.univ-tlse3.fr/icalfeed/')
+            
+        return message.reply({
+        content: `❌ | Vous devez spécifier une URL.\nExemple : \`${client.configs.prefix}enregistrer ${exampleCalendar()}\``,
+        components: [
+            new ActionRowBuilder<ButtonBuilder>().setComponents(button)
+        ]
+    }).catch(log4js.trace);
+    }
 
     if (!validCalendarURL(url)) return message.reply(`❌ | Votre URL n'est pas valide.\n💡\n> Votre URL doit ressembler **exactement** à \`${exampleCalendar()}\`, mis à part le XXXXXXXXXXXXXX`).catch(log4js.trace);
 
