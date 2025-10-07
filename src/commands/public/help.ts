@@ -72,6 +72,7 @@ export default new AmethystCommand({
                 inline: false
             }
         )
+        .setColor('Orange')
     
     message.reply({
         embeds: [embed]
