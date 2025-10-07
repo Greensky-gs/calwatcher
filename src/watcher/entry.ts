@@ -17,6 +17,10 @@ export class Watcher {
         this.calendarURL = calendarURL;
     }
 
+    public get courses(): databaseEventType[] {
+        return Object.values(this.db.cache)
+    }
+
     public set url(url: string) {
         this.calendarURL = url;
     }
@@ -58,8 +62,8 @@ export class Watcher {
 
         this.db.bulk()
         Object.entries(this.db.cache).forEach(([id, event]) => {
-            if (event.start < now) {
-                this.db.remove(id)
+            if (event.end < now - 7 * 24 * 60 * 60 * 1000) {
+                this.db.remove(id);
             }
         })
         this.db.bulkUpdate();
@@ -72,19 +76,17 @@ export class Watcher {
         
         const file = this.writeToTemp(response.data);
         
+        const now = new Date();
+
         this.db.bulk()
         ical.parseFile(file, (err, data) => {
             if (err) throw err;
             const calendar = data as calendarType;
             if (!calendar) console.log("No calendar");
-            
-            const now = new Date()
-            
+                        
             Object.entries(calendar)
             .filter(([k]) => k !== "vcalendar")
             .forEach(([id, event]: [string, eventType], i) => {
-                if (event.start.getTime() < now.getTime()) return;
-                
                 if (this.db.exists(id)) {
                     const comparison = this.compareEvents(this.db.getEvent(id), event);
                     if (comparison.length > 0) {
@@ -94,17 +96,18 @@ export class Watcher {
                 }
                 if (!this.db.exists(id)) {
                     this.db.add(id, event);
+                    if (event.start.getTime() < now.getTime()) return;
                     notifyFullCourses([event], user);
                     return;
                 }
             });
 
-            this.purgeDatabase();
         });
         
         this.db.bulkUpdate();
         
         this.deleteTemp(file);
+        this.purgeDatabase();
 
         this.executing = false;
     }

@@ -12,10 +12,10 @@ export const determineColor = (ev: eventType): number => {
         courstd: "#7D4F72",
         conference: "#00FF00",
         cc: "#808000",
-        default: '#be0aa6ff'
+        default: '#be0aa6'
     }
 
-    const determineColorKey = (ev: eventType) => [['TD', 'td'], ['CM', 'cm'], ['TP', 'tp'], ['COURS/TD', 'courstd'], ['Conférence', 'conference'], ['Contrôle Continu', 'cc']].find(([key, value]) => ev.summary.includes(key))?.[1] ?? 'default';
+    const determineColorKey = (ev: eventType) => [['TD', 'td'], ['TP', 'tp'], ['COURS/TD', 'courstd'], ['Cours', 'cm'], ['Conférence', 'conference'], ['Contrôle Continu', 'cc']].find(([key, value]) => ev.summary.includes(key))?.[1] ?? 'default';
 
     return parseInt(colors[determineColorKey(ev)].replace('#', ''), 16);
 }
