@@ -3,4 +3,5 @@
 dist/
 node_modules/
 database/
-test/C
+test/
+*.log
